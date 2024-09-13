@@ -1,0 +1,49 @@
+name: Lint & Type Check
+
+env:
+  PYTHON_VERSION: "3.11"
+  POETRY_VERSION: "1.8.3"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint_type_check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Cache poetry
+        id: poetry-cache
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.local
+          key: ${{ runner.os }}-python${{ env.PYTHON_VERSION }}-poetry${{ env.POETRY_VERSION }}
+      - name: Cache poetry packages
+        id: packages-cache
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/.cache/pypoetry
+          key: ${{ runner.os }}-${{ github.job }}-packages-${{ hashFiles('**/poetry.lock') }}
+      - name: Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install poetry
+        if: steps.poetry-cache.outputs.cache-hit != 'true'
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+      - name: Resolve Dependencies
+        if: steps.packages-cache.outputs.cache-hit != 'true'
+        run: poetry install
+      - name: Run ruff
+        run: poetry run ruff check
+      - name: Run mypy
+        run: poetry run mypy .
