@@ -55,7 +55,7 @@ jobs:
         run: poetry install
 
       - name: Start Build
-        shell: bash
+        shell: pwsh
         run: |
           poetry run task build --name ${{ env.PRODUCT_NAME }} --product-version ${{github.ref_name}} --file-version ${{github.ref_name}}
 
