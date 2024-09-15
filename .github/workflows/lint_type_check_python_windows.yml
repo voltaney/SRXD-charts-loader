@@ -44,6 +44,9 @@ jobs:
       - name: Add Poetry to PATH
         shell: bash
         run: echo "$APPDATA/Python/Scripts" >> $GITHUB_PATH
+      - name: Check current directory
+        shell: bash
+        run: pwd
       - name: Resolve Dependencies
         if: steps.packages-cache.outputs.cache-hit != 'true'
         shell: bash
