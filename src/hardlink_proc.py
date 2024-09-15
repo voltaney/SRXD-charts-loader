@@ -1,5 +1,6 @@
 """ハードリンク作成処理を行うモジュール"""
 
+import glob
 from dataclasses import dataclass
 from logging import getLogger
 from pathlib import Path
@@ -88,7 +89,7 @@ def create_hardlink(  # noqa: C901
                 logger.exception(f"ハードリンク作成に失敗: {e}")
                 raise e
         # アルバムアートのハードリンク作成
-        album_art_files = source_album_art_dir.glob(f"{albumart_asset_name}.*")
+        album_art_files = source_album_art_dir.glob(glob.escape(albumart_asset_name) + ".*")
         src_album_art_file = None
         for file in album_art_files:
             if file.is_file():
@@ -104,7 +105,7 @@ def create_hardlink(  # noqa: C901
         else:
             logger.warning(f"画像ファイル「{albumart_asset_name}」が見つかりません")
         # クリップのハードリンク作成
-        clip_files = source_clip_dir.glob(f"{clip_asset_name}.*")
+        clip_files = source_clip_dir.glob(glob.escape(clip_asset_name) + ".*")
         src_clip_file = None
         for file in clip_files:
             if file.is_file():
