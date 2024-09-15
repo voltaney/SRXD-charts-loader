@@ -28,13 +28,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Cache poetry packages
+        id: packages-cache
+        uses: actions/cache@v4
+        with:
+          path: ~\AppData\Local\pypoetry\Cache\virtualenvs
+          key: ${{ runner.os }}-${{ github.job }}-packages-${{ hashFiles('**/poetry.lock') }}
+
       - name: Setup Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install poetry
-        if: steps.poetry-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
           curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
@@ -52,11 +58,11 @@ jobs:
         shell: bash
         run: |
           poetry run task build --name ${{ env.PRODUCT_NAME }} --product-name ${{ env.PRODUCT_NAME }} --product-version ${{github.ref_name}} --file-version ${{github.ref_name}}
-      - run: pip install -r requirements.txt
-      - run: flet pack app.py --name ${{ matrix.flet-name }}
+
       - name: "Windows compress"
         shell: pwsh
         run: powershell Compress-Archive -Path dist/* -DestinationPath ${{ env.PRODUCT_NAME }}_${{github.ref_name}}.zip
+
       - name: "Upload Release"
         run: gh release upload ${{github.ref_name}} ${{ env.PRODUCT_NAME }}_${{github.ref_name}}.zip
         env:
