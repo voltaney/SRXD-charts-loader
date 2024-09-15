@@ -44,6 +44,10 @@ jobs:
       - name: Add Poetry to PATH
         shell: bash
         run: echo "$APPDATA/Python/Scripts" >> $GITHUB_PATH
+      - name: Add Poetry to PATH (if cache hit)
+        if: steps.poetry-cache.outputs.cache-hit == 'true'
+        shell: powershell
+        run: echo "C:\Users\runneradmin\AppData\Roaming\Python\Scripts" >> $env:GITHUB_PATH
       - name: Check current state
         shell: bash
         run: |
