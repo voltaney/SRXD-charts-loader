@@ -15,6 +15,7 @@ ruff = "^0.6.4"
 mypy = "^1.11.2"
 pytest = "^8.3.2"
 taskipy = "^1.13.0"
+pyinstaller = "^6.10.0"
 
 [tool.pytest.ini_options]
 filterwarnings = ["ignore::DeprecationWarning"]
@@ -64,3 +65,4 @@ convention = "google" # Use Google-style docstrings.
 run_flet = "flet -d -r ./src"
 run_python_flet = "cd ./debug && python ../src/main.py"
 chart_db = "python ./src/chart_db/main.py"
+build = "flet pack ./src/main.py --hidden-import rich.logging -y"
