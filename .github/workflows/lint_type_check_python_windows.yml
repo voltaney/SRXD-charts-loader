@@ -24,13 +24,13 @@ jobs:
         id: poetry-cache
         uses: actions/cache@v4
         with:
-          path: C:\Users\runneradmin\AppData\Roaming\Python\Scripts
+          path: C:/Users/runneradmin/AppData/Roaming/Python/Scripts
           key: ${{ runner.os }}-python${{ env.PYTHON_VERSION }}-poetry${{ env.POETRY_VERSION }}
       - name: Cache poetry packages
         id: packages-cache
         uses: actions/cache@v4
         with:
-          path: C:\Users\runneradmin\AppData\Local\pypoetry\Cache\virtualenvs
+          path: C:/Users/runneradmin/AppData/Local/pypoetry/Cache/virtualenvs
           key: ${{ runner.os }}-${{ github.job }}-packages-${{ hashFiles('**/poetry.lock') }}
       - name: Setup Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v4
