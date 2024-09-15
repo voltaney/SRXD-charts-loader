@@ -71,20 +71,20 @@ def main(page: ft.Page) -> None:
             },
         }
         cache.save_cache(window_cache)
-        page.controls.clear()
-        page.update()
+        filter_tab.save_cache()
         page.window.destroy()
 
     # ウィンドウのイベントハンドラを設定
     page.window.on_event = on_close
 
+    filter_tab = FilterTab()
     main_content = ft.Tabs(
         selected_index=0,
         animation_duration=300,
         tabs=[
             ft.Tab(
                 text="フィルター",
-                content=FilterTab(),
+                content=filter_tab,
             ),
             ft.Tab(
                 text="設定",

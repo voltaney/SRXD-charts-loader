@@ -171,3 +171,9 @@ class FilterTab(ft.Container):
         cache.save_cache(
             {"positive_filter": self.positive_fliter.values(), "negative_filter": self.negative_filter.values()}
         )
+
+    def save_cache(self) -> None:
+        """フィルタ条件をキャッシュに保存"""
+        cache.save_cache(
+            {"positive_filter": self.positive_fliter.values(), "negative_filter": self.negative_filter.values()}
+        )
