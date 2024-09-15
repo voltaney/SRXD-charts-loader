@@ -1,7 +1,7 @@
 name: Lint & Type Check
 
 env:
-  PYTHON_VERSION: "3.11"
+  PYTHON_VERSION: "3.12"
   POETRY_VERSION: "1.8.3"
 
 on:
