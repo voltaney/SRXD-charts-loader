@@ -54,7 +54,7 @@ def main(page: ft.Page) -> None:
     # キャッシュからウィンドウ情報を復元
     set_page_stat_from_cache(page)
     # ページの設定
-    page.title = "カスタムチャート管理"
+    page.title = "Spinチャートローダー"
     page.theme = ft.Theme(
         color_scheme_seed="amber",
         # scrollbar_theme=ft.ScrollbarTheme(track_visibility=True),
