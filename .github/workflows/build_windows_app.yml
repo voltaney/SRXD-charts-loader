@@ -1,0 +1,63 @@
+name: build widnows app
+env:
+  PYTHON_VERSION: "3.12"
+  POETRY_VERSION: "1.8.3"
+  PRODUCT_NAME: "SRXDチャートローダー"
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Create Release"
+        run: gh release create ${{github.ref_name}} --draft --verify-tag --notes "Release ${{github.ref_name}}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  windows-build:
+    needs: create-release
+    runs-on: widnows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install poetry
+        if: steps.poetry-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
+
+      - name: Add Poetry to PATH
+        shell: bash
+        run: echo "$APPDATA/Python/Scripts" >> $GITHUB_PATH
+
+      - name: Resolve Dependencies
+        if: steps.packages-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: poetry install
+
+      - name: Start Build
+        shell: bash
+        run: |
+          poetry run task build --name ${{ env.PRODUCT_NAME }} --product-name ${{ env.PRODUCT_NAME }} --product-version ${{github.ref_name}} --file-version ${{github.ref_name}}
+      - run: pip install -r requirements.txt
+      - run: flet pack app.py --name ${{ matrix.flet-name }}
+      - name: "Windows compress"
+        shell: pwsh
+        run: powershell Compress-Archive -Path dist/* -DestinationPath ${{ env.PRODUCT_NAME }}_${{github.ref_name}}.zip
+      - name: "Upload Release"
+        run: gh release upload ${{github.ref_name}} ${{ env.PRODUCT_NAME }}_${{github.ref_name}}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
