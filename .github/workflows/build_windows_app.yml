@@ -22,7 +22,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   windows-build:
     needs: create-release
-    runs-on: widnows-latest
+    runs-on: windows-latest
     permissions:
       contents: write
     steps:
