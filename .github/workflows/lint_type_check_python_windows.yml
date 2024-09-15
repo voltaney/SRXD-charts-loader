@@ -42,11 +42,14 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
       - name: Add Poetry to PATH
-        run: echo "C:\Users\runneradmin\AppData\Roaming\Python\Python\Scripts" >> $env:GITHUB_PATH
+        shell: bash
+        run: echo "$APPDATA/Python/Scripts" >> $env:GITHUB_PATH
       - name: Resolve Dependencies
-        # if: steps.packages-cache.outputs.cache-hit != 'true'
+        shell: bash
         run: poetry install
       - name: Run ruff
+        shell: bash
         run: poetry run ruff check
       - name: Run mypy
+        shell: bash
         run: poetry run mypy .
