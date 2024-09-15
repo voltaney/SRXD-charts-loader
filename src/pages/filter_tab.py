@@ -52,8 +52,13 @@ class FilterTab(ft.Container):
 
         self.content = ft.Column(
             controls=[
-                self.positive_fliter.create_view("プラス条件"),
-                self.negative_filter.create_view("マイナス条件"),
+                ft.Column(
+                    controls=[
+                        self.positive_fliter.create_view("プラス条件", "検索に含める条件"),
+                        self.negative_filter.create_view("マイナス条件", "検索から除外する条件"),
+                    ],
+                    spacing=0,
+                ),
                 ft.Row(
                     controls=[
                         self.hardlink_creation_button,
@@ -65,8 +70,12 @@ class FilterTab(ft.Container):
                     ]
                 ),
                 self.hardlink_progress_info,
-            ]
+            ],
+            spacing=20,
+            scroll=ft.ScrollMode.ALWAYS,
         )
+
+        self.padding = ft.Padding(10, 0, 10, 10)
 
     def on_click_hardlink_creation_button(self, e: ft.ControlEvent) -> None:
         """ハードリンク作成ボタンがクリックされたときのコールバック関数

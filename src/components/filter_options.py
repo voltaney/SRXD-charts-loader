@@ -10,6 +10,15 @@ from typing import Any
 
 import flet as ft
 
+# フォームに関するスタイル
+FORM_HEIGHT = 35
+FORM_FONT_SIZE = 14
+FORM_CONTENT_PADDING = ft.Padding(10, 0, 0, 0)
+FORM_PANE_WIDTH = 500
+FORM_PANE_PADDING = ft.Padding(15, 10, 15, 25)
+FORM_SPACING = 2
+FORM_LABEL_WIDTH = 130
+
 
 class ChartFileterGroup:
     """チャートフィルタの条件のグループ"""
@@ -22,7 +31,7 @@ class ChartFileterGroup:
         """
         self.forms = forms
 
-    def create_view(self, title: str, color: str | None = None) -> ft.ExpansionTile:
+    def create_view(self, title: str, subtitle: str | None = None, color: str | None = None) -> ft.ExpansionTile:
         """Flet用のViewを作成
 
         Returns:
@@ -30,8 +39,8 @@ class ChartFileterGroup:
         """
         filter_group = ft.Column(
             controls=self.forms,
-            spacing=5,
-            width=400,
+            spacing=FORM_SPACING,
+            width=FORM_PANE_WIDTH,
         )
 
         def update_initially_expanded(e: ft.ControlEvent) -> None:
@@ -41,22 +50,18 @@ class ChartFileterGroup:
             tile.update()
 
         tile = ft.ExpansionTile(
-            title=ft.Text(title),
-            subtitle=ft.Text("Trailing expansion arrow icon"),
+            title=ft.Text(title, size=18, weight=ft.FontWeight.W_500),
+            subtitle=ft.Text(subtitle, size=12),
             affinity=ft.TileAffinity.LEADING,
             maintain_state=True,
             collapsed_text_color=color,
             text_color=color,
             initially_expanded=True,
-            controls=[
-                ft.Container(
-                    content=filter_group,
-                    margin=ft.margin.all(10),
-                    alignment=ft.alignment.top_left,
-                )
-            ],
+            controls=[filter_group],
             visual_density=ft.VisualDensity.COMPACT,
             on_change=update_initially_expanded,
+            controls_padding=FORM_PANE_PADDING,
+            expanded_alignment=ft.alignment.top_left,
         )
         return tile
 
@@ -97,7 +102,7 @@ class FilterOptionForm(ft.Row, metaclass=abc.ABCMeta):
         super().__init__()
         self.checkbox = ft.Checkbox(
             label=label,
-            width=120,
+            width=FORM_LABEL_WIDTH,
         )
         self.filter_id = id
         self.controls = [self.checkbox]
@@ -151,10 +156,11 @@ class TextFilterOptionForm(FilterOptionForm):
         """
         super().__init__(id, label)
         self.text_field = ft.TextField(
-            text_size=12,
-            height=30,
+            text_size=FORM_FONT_SIZE,
+            height=FORM_HEIGHT,
             width=text_field_width,
-            content_padding=ft.Padding(10, 0, 0, 0),
+            expand=True,
+            content_padding=FORM_CONTENT_PADDING,
             input_filter=ft.NumbersOnlyInputFilter() if only_integer_input else None,
         )
         self.controls.append(self.text_field)
@@ -200,6 +206,9 @@ class DropdownFilterOptionForm(FilterOptionForm):
             options=options,
             # selected_index=0,
             expand=True,
+            height=FORM_HEIGHT,
+            text_size=FORM_FONT_SIZE,
+            content_padding=FORM_CONTENT_PADDING,
         )
         self.controls.append(self.dropdown)
 

@@ -63,7 +63,7 @@ convention = "google" # Use Google-style docstrings.
 
 [tool.taskipy.tasks]
 # こちらだと、Richのログ出力ができない
-run_flet = "flet -d -r ./src"
+run_flet = "cd ./debug && flet -d -r ../src"
 run_python_flet = "cd ./debug && python ../src/main.py"
 chart_db = "python ./src/chart_db/main.py"
 build = "flet pack ./src/main.py --hidden-import rich.logging --icon build_asset/icon.png -y"

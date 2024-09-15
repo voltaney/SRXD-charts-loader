@@ -54,7 +54,14 @@ def main(page: ft.Page) -> None:
     set_page_stat_from_cache(page)
     # ページの設定
     page.title = "カスタムチャート管理"
-    page.theme = ft.Theme(color_scheme_seed="amber")
+    page.theme = ft.Theme(
+        color_scheme_seed="amber",
+        # scrollbar_theme=ft.ScrollbarTheme(track_visibility=True),
+        expansion_tile_theme=ft.ExpansionTileTheme(
+            # bgcolor=ft.colors.PRIMARY_CONTAINER,
+        ),
+    )
+    page.padding = ft.padding.all(0)
     # ウィンドウクローズイベントをキャッチできるようにする
     page.window.prevent_close = True
 
@@ -80,7 +87,7 @@ def main(page: ft.Page) -> None:
     filter_tab = FilterTab()
     main_content = ft.Tabs(
         selected_index=0,
-        animation_duration=300,
+        animation_duration=200,
         tabs=[
             ft.Tab(
                 text="フィルター",
@@ -92,7 +99,8 @@ def main(page: ft.Page) -> None:
                 content=SettingTab(),
             ),
         ],
-        expand=1,
+        scrollable=True,
+        expand=True,
     )
 
     page.add(main_content)

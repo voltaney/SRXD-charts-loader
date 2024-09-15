@@ -25,10 +25,12 @@ class SettingTab(ft.Container):
         self.content = ft.Column(
             controls=[
                 DatabasePane(),
-                ft.Divider(),
+                ft.Divider(color=ft.colors.BROWN_500),
                 PathPane(),
-            ]
+            ],
+            scroll=ft.ScrollMode.AUTO,
         )
+        self.padding = ft.padding.symmetric(20, 20)
 
 
 class DatabasePane(ft.Column):
@@ -55,7 +57,7 @@ class DatabasePane(ft.Column):
             on_click=self.on_click_truncate_button,
         )
         self.controls = [
-            ft.Text("チャートデータのロード", size=20),
+            ft.Text("チャートデータのロード", size=25),
             ft.Text(
                 "カスタムチャートを読み込んでデータベースを作成します。更新が必要なファイルのみ読み込まれます。",
                 size=14,
@@ -140,7 +142,7 @@ class PathPane(ft.Column):
         self.custom_chart_dir_text_field = ft.TextField(value=user_settings.custom_charts_dir)
         self.hardlink_dir_text_field = ft.TextField(value=user_settings.hardlink_dir)
         self.controls = [
-            ft.Text("パス設定", size=20),
+            ft.Text("パス設定", size=25),
             ft.Text(
                 "ハードリンクなんでどちらも同じボリュームじゃないと、動作しないっす！NTFSじゃないのも多分厳しいっす！",
                 size=14,
