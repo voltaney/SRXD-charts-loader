@@ -111,7 +111,7 @@ class DatabasePane(ft.Column):
             total (int): ロードするファイル数
         """
         self.progress_bar.value = idx / total
-        self.progress_text.value = f"{idx}/{total} ファイルをロード中"
+        self.progress_text.value = f"({idx}/{total}) ファイル{srtb.file_reference}をロード中"
         self.update()
 
     def on_click_truncate_button(self, e: ft.ControlEvent) -> None:
