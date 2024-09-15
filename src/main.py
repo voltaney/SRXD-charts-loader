@@ -77,6 +77,12 @@ def main(page: ft.Page) -> None:
                 "y": page.window.top,
             },
         }
+        ending_modal = ft.AlertDialog(
+            modal=False,
+            title=ft.Text("終了処理中"),
+            content=ft.ProgressBar(),
+        )
+        page.open(ending_modal)
         cache.save_cache(window_cache)
         filter_tab.save_cache()
         page.window.destroy()
