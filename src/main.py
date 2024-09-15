@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging.config
+import time
 from logging import getLogger
 from typing import TYPE_CHECKING
 
@@ -83,6 +84,7 @@ def main(page: ft.Page) -> None:
             content=ft.ProgressBar(),
         )
         page.open(ending_modal)
+        time.sleep(0.5)
         cache.save_cache(window_cache)
         filter_tab.save_cache()
         page.window.destroy()
