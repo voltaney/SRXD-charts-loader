@@ -2,7 +2,7 @@ name: Build windows app
 env:
   PYTHON_VERSION: "3.12"
   POETRY_VERSION: "1.8.3"
-  PRODUCT_NAME: "SRXDチャートローダー"
+  PRODUCT_NAME: "SpinChartLoader"
 
 on:
   push:
@@ -57,7 +57,7 @@ jobs:
       - name: Start Build
         shell: pwsh
         run: |
-          poetry run task build --name ${{ env.PRODUCT_NAME }} --product-version ${{github.ref_name}} --file-version ${{github.ref_name}}
+          poetry run task build --name ${{ env.PRODUCT_NAME }} --product-name ${{ env.PRODUCT_NAME }} --product-version ${{github.ref_name}} --file-version ${{github.ref_name}}
 
       - name: "Windows compress"
         shell: pwsh
