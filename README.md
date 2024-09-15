@@ -1,21 +1,13 @@
-# Pythonプロジェクトの雛形
-## 開発環境
-- Linter / Formatter: Ruff
-- Type check: Mypy
-- Unit test: pytest
-- Task runner: taskipy
-- pre-commit
+## Spinチャートローダー
+特定条件にマッチしたチャートのみをSpin Rhythm XDにロードさせるGUIソフト
+チャート数が数千のオーダーになると探すのもロードするのも一苦労なので作ってみました。
 
-### 依存パッケージインストール
-```bash
-poetry install
-```
-### pre-commitでpre-commitフックをローカルに作成
-```bash
-pre-commit install
-```
-### VSCode拡張のインストール
-- Mypy Type Checker
-- Ruff
-- autoDocstring
-VSCode設定はすべて`.vscode/settings.json`で管理。
+### フィルターに使える条件
+- アーティスト（除外も含む）
+- チャーター（除外も含む）
+- 難度（最低・最高）
+- 再生時間（最短・最長）
+
+### 注意
+Windowsのハードリンク機能を使うため、余分にデータスペースを食うことはありません。  
+ただし、読み込み元Dirとハードリンク作成先Dirは同じボリュームである必要があります。
