@@ -2,7 +2,12 @@
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "~3.12"
+flet = "^0.24.1"
+srtb = { git = "https://github.com/voltaney/SRXD-srtb-parser.git" }
+toml = "^0.10.2"
+pywin32 = "^306"
+rich = "^13.8.1"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.8.0"
@@ -21,6 +26,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.mypy]
 disallow_untyped_defs = true
 ignore_missing_imports = true
+disable_error_code = "import-untyped"
 
 [tool.ruff]
 # https://docs.astral.sh/ruff/settings/#top-level
@@ -41,7 +47,7 @@ select = [
 ]
 ignore = ["D415"]
 fixable = ["ALL"]
-unfixable = ["F401"]
+# unfixable = ["F401"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 10
@@ -54,4 +60,7 @@ convention = "google" # Use Google-style docstrings.
 "tests/**" = ["D"]       #  Ignore all directories named `tests`.
 
 [tool.taskipy.tasks]
-example = "python examples/run_something.py"
+# こちらだと、Richのログ出力ができない
+run_flet = "flet -d -r ./src"
+run_python_flet = "cd ./debug && python ../src/main.py"
+chart_db = "python ./src/chart_db/main.py"

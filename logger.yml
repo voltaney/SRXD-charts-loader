@@ -1,0 +1,26 @@
+version: 1
+disable_existing_loggers: False
+root:
+  level: DEBUG
+  handlers: [consoleHandler, logFileHandler]
+handlers:
+  consoleHandler:
+    class: rich.logging.RichHandler
+    level: DEBUG
+    formatter: rich
+    # markup: true
+    # stream: ext://sys.stdout
+  logFileHandler:
+    class: logging.FileHandler
+    level: INFO
+    formatter: logFileFormatter
+    filename: ./app.log
+    mode: w
+    encoding: utf-8
+formatters:
+  rich:
+    datefmt: "[%X]"
+    format: "%(message)s"
+    # format: "%(log_color)s[%(levelname)-7s:%(name)10s]%(reset)s %(funcName)s -> %(message)s"
+  logFileFormatter:
+    format: "[%(levelname)-7s:%(name)s] %(funcName)s -> %(message)s"
