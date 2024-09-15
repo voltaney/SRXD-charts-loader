@@ -43,6 +43,7 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 - --version ${{ env.POETRY_VERSION }}
       - name: Resolve Dependencies
         # if: steps.packages-cache.outputs.cache-hit != 'true'
+        shell: bash
         run: poetry install
       - name: Run ruff
         run: poetry run ruff check
