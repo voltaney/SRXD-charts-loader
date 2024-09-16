@@ -95,8 +95,7 @@ class DatabasePane(ft.Column):
         logger.info("チャートデータのロードが完了")
         self.latest_load_date.text = chart_db.get_latest_update_date()
         snackbar = ft.SnackBar(content=ft.Text("チャートデータをロードしました"), duration=3000)
-        self.page.overlay.append(snackbar)
-        snackbar.open = True
+        self.page.open(snackbar)
         # ロード状況を非表示 / ロードボタンを有効化
         self.progress_info.visible = False
         self.load_button.disabled = False
@@ -127,8 +126,7 @@ class DatabasePane(ft.Column):
         logger.info("データベースの初期化を完了")
         self.truncate_button.disabled = False
         snackbar = ft.SnackBar(content=ft.Text("データベースを初期化しました"), duration=3000)
-        self.page.overlay.append(snackbar)
-        snackbar.open = True
+        self.page.open(snackbar)
         self.page.update()
 
 
@@ -183,8 +181,7 @@ class PathPane(ft.Column):
         logger.info("パス設定を保存")
         self.reload_settings_text_field()
         snackbar = ft.SnackBar(content=ft.Text("設定を保存しました"), duration=3000)
-        self.page.overlay.append(snackbar)
-        snackbar.open = True
+        self.page.open(snackbar)
         self.page.update()
 
     def on_save_default_settings(self, e: ft.ControlEvent) -> None:
@@ -196,8 +193,7 @@ class PathPane(ft.Column):
         settings.save_default_settings()
         self.reload_settings_text_field()
         snackbar = ft.SnackBar(content=ft.Text("デフォルト設定に戻しました"), duration=3000)
-        self.page.overlay.append(snackbar)
-        snackbar.open = True
+        self.page.open(snackbar)
         self.page.update()
 
     def reload_settings_text_field(self) -> None:

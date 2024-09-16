@@ -3,12 +3,15 @@
 from contextlib import closing
 from dataclasses import dataclass
 from datetime import datetime
+from logging import getLogger
 from pathlib import Path
 from typing import Callable
 
 import srtb
 
 from .connection import get_db_connection
+
+logger = getLogger(__name__)
 
 
 @dataclass
@@ -154,8 +157,8 @@ def load_srtb_files_to_sqlite(
         try:
             with open(chart_file, "r", encoding="utf-8") as f:
                 chart = srtb.load(f)
-        except Exception as e:
-            print(f"{chart_file.stem}の読み込みに失敗しました: {e}")
+        except Exception:
+            logger.exception(f"{chart_file.stem}の読み込みに失敗しました")
             continue
         # クリップの長さも読み込み
         chart.read_clip_metadata()

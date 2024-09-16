@@ -67,6 +67,12 @@ class FilterTab(ft.Container):
                             on_click=self.on_click_check_count_button,
                             icon=ft.icons.CONFIRMATION_NUMBER_OUTLINED,
                         ),
+                        ft.ElevatedButton(
+                            "ハードリンクをクリア",
+                            on_click=self.on_click_clear_hardlink_button,
+                            style=ft.ButtonStyle(color=ft.colors.RED_300),
+                            icon=ft.icons.DELETE,
+                        ),
                     ]
                 ),
                 self.hardlink_progress_info,
@@ -130,9 +136,19 @@ class FilterTab(ft.Container):
         search_result = search_charts_from_filter_values(self.positive_fliter.values() | self.negative_filter.values())
         logger.info("該当件数カウント完了: %d 件", len(search_result))
         snackbar = ft.SnackBar(content=ft.Text(f"{len(search_result)}件が該当します"), duration=3000)
-        self.page.overlay.append(snackbar)
-        snackbar.open = True
-        self.page.update()
+        self.page.open(snackbar)
+
+    def on_click_clear_hardlink_button(self, e: ft.ControlEvent) -> None:
+        """ハードリンクをクリアするボタンがクリックされたときのコールバック関数
+
+        Args:
+            e (ft.ControlEvent): イベント情報
+        """
+        logger.info("ハードリンクの削除開始")
+        hardlink_proc.delete_all_hardlinks()
+        logger.info("ハードリンクの削除完了")
+        snackbar = ft.SnackBar(content=ft.Text("ハードリンクを削除しました"), duration=3000)
+        self.page.open(snackbar)
 
     def init_chart_filter_groups(self) -> None:
         """チャートフィルタのグループを初期化"""

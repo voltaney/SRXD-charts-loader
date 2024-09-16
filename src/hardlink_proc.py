@@ -18,6 +18,17 @@ ALBUM_ART_EXT = ["png"]
 AUDIO_CLIP_EXT = ["ogg", "mp3"]
 
 
+def _delete_file_safely(file: Path) -> None:
+    """ファイルを安全に削除する
+
+    ファイルが存在しない場合は、何もしない。
+    Args:
+        file (Path): 削除するファイルのパス
+    """
+    if file.exists() and file.is_file():
+        file.unlink()
+
+
 @dataclass
 class Result:
     """ハードリンク作成の結果を格納するクラス
@@ -76,7 +87,7 @@ def create_hardlink(  # noqa: C901
                 continue
             elif e.winerror == 183:
                 # すでにハードリンクが存在する
-                logger.info(f"既にソースファイルが存在するためスキップされました: {src_srtb.name}")
+                logger.debug(f"既にソースファイルが存在するためスキップされました: {src_srtb.name}")
                 result.success_creation_count += 1
                 continue
             elif e.winerror == 17:
@@ -97,11 +108,8 @@ def create_hardlink(  # noqa: C901
                 break
         if src_album_art_file is not None:
             dst_art = hardlink_album_art_dir / src_album_art_file.name
-            try:
-                win32file.CreateHardLink(str(dst_art.resolve()), str(src_album_art_file.resolve()))
-            except pywintypes.error as e:
-                print(dst_art.resolve())
-                print(f"{src_album_art_file.resolve()}: {e}")
+            _delete_file_safely(dst_art)
+            win32file.CreateHardLink(str(dst_art.resolve()), str(src_album_art_file.resolve()))
         else:
             logger.warning(f"画像ファイル「{albumart_asset_name}」が見つかりません")
         # クリップのハードリンク作成
@@ -113,6 +121,7 @@ def create_hardlink(  # noqa: C901
                 break
         if src_clip_file is not None:
             dst_clip = hardlink_clip_dir / src_clip_file.name
+            _delete_file_safely(dst_clip)
             win32file.CreateHardLink(str(dst_clip.resolve()), str(src_clip_file.resolve()))
         else:
             logger.warning(f"音声ファイル「{clip_asset_name}」が見つかりません")
@@ -146,4 +155,29 @@ def delete_untargeted_hardlinks(srtb_list: list[tuple[str, str, str]], hardlink_
     targeted_clip_name = [srtb[2] for srtb in srtb_list]
     for file in clip_files:
         if file.is_file() and file.stem not in targeted_clip_name:
+            file.unlink()
+
+
+def delete_all_hardlinks() -> None:
+    """ハードリンクをすべて削除する
+
+    Args:
+        hardlink_dir (Path): ハードリンクフォルダのパス
+    """
+    user_settings = settings.load_settings()
+    hardlink_dir = Path(user_settings.hardlink_dir)
+    # srtbファイルの削除
+    srtb_files = hardlink_dir.glob("*.srtb")
+    for file in srtb_files:
+        if file.is_file():
+            file.unlink()
+    # アルバムアートの削除
+    album_art_files = (hardlink_dir / ALBUM_ART_FOLDER_NAME).glob("*")
+    for file in album_art_files:
+        if file.is_file():
+            file.unlink()
+    # クリップの削除
+    clip_files = (hardlink_dir / AUDIO_CLIP_FOLDER_NAME).glob("*")
+    for file in clip_files:
+        if file.is_file():
             file.unlink()
