@@ -45,14 +45,16 @@ class Result:
 
 
 def create_hardlink(  # noqa: C901
-    srtb_list: list[tuple[str, str, str]], on_each_creation: Callable[[int, int], None] | None = None
+    srtb_list: list[tuple[str, str, str]],
+    on_each_creation: Callable[[int, int], None] | None = None,
+    keep_previous_hardlinks: bool = False,
 ) -> Result:
     """ハードリンクを作成する関数
 
     Args:
         srtb_list (list[tuple[str, str, str]]): srtbファイルのリスト
         on_each_creation (Callable[[int, int], None] | None, optional): 各ハードリンク作成時に呼び出されるコールバック
-
+        keep_previous_hardlinks (bool, optional): すでに存在するハードリンクを削除せずに追加するかどうか
     Returns:
         Result: ハードリンク作成の結果
     """
@@ -69,7 +71,8 @@ def create_hardlink(  # noqa: C901
     hardlink_clip_dir.mkdir(parents=True, exist_ok=True)
 
     # すでにハードリンクとして存在する不要なファイルを削除
-    delete_untargeted_hardlinks(srtb_list, hardlink_dir)
+    if not keep_previous_hardlinks:
+        delete_untargeted_hardlinks(srtb_list, hardlink_dir)
     # ハードリンク作成
     for idx, srtb in enumerate(srtb_list):
         if on_each_creation:

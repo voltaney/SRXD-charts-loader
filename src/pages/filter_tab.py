@@ -36,9 +36,14 @@ class FilterTab(ft.Container):
         super().__init__()
         self.init_chart_filter_groups()
         self.hardlink_creation_button = ft.ElevatedButton(
-            "ハードリンク作成",
+            "ハードリンク切替",
             on_click=self.on_click_hardlink_creation_button,
             icon=ft.icons.SYNC,
+        )
+        self.hardlink_add_button = ft.ElevatedButton(
+            "ハードリンク追加",
+            on_click=self.on_add_hardlink_add_button,
+            icon=ft.icons.ADD,
         )
         self.hardlink_progress_bar = ft.ProgressBar()
         self.hardlink_progress_text = ft.Text(size=12)
@@ -59,14 +64,15 @@ class FilterTab(ft.Container):
                     ],
                     spacing=0,
                 ),
+                ft.OutlinedButton(
+                    "該当件数カウント",
+                    on_click=self.on_click_check_count_button,
+                    icon=ft.icons.CONFIRMATION_NUMBER_OUTLINED,
+                ),
                 ft.Row(
                     controls=[
                         self.hardlink_creation_button,
-                        ft.ElevatedButton(
-                            "該当件数カウント",
-                            on_click=self.on_click_check_count_button,
-                            icon=ft.icons.CONFIRMATION_NUMBER_OUTLINED,
-                        ),
+                        self.hardlink_add_button,
                         ft.ElevatedButton(
                             "ハードリンクをクリア",
                             on_click=self.on_click_clear_hardlink_button,
@@ -91,6 +97,7 @@ class FilterTab(ft.Container):
         """
         self.hardlink_progress_info.visible = True
         self.hardlink_creation_button.disabled = True
+        self.hardlink_add_button.disabled = True
         self.page.update()
         search_result = search_charts_from_filter_values(self.positive_fliter.values() | self.negative_filter.values())
         logger.info("ハードリンク作成開始: %d 件", len(search_result))
@@ -99,6 +106,7 @@ class FilterTab(ft.Container):
 
         self.hardlink_progress_info.visible = False
         self.hardlink_creation_button.disabled = False
+        self.hardlink_add_button.disabled = False
         if result.has_error:
             snackbar = ft.SnackBar(
                 content=ft.Text(f"{result.error_message}"),
@@ -108,6 +116,42 @@ class FilterTab(ft.Container):
             snackbar = ft.SnackBar(
                 content=ft.Text(
                     f"{result.success_creation_count}/{len(search_result)} 件のハードリンクが作成されました"
+                ),
+                duration=3000,
+            )
+        self.page.overlay.append(snackbar)
+        snackbar.open = True
+        self.page.update()
+
+    def on_add_hardlink_add_button(self, e: ft.ControlEvent) -> None:
+        """ハードリンク追加ボタンがクリックされたときのコールバック関数
+
+        Args:
+            e (ft.ControlEvent): イベント情報
+        """
+        self.hardlink_progress_info.visible = True
+        self.hardlink_creation_button.disabled = True
+        self.hardlink_add_button.disabled = True
+        self.page.update()
+        search_result = search_charts_from_filter_values(self.positive_fliter.values() | self.negative_filter.values())
+        logger.info("ハードリンク追加開始: %d 件", len(search_result))
+        result = hardlink_proc.create_hardlink(
+            search_result, on_each_creation=self.on_each_hardlink_creation, keep_previous_hardlinks=True
+        )
+        logger.info("ハードリンク追加結果: %s", result)
+
+        self.hardlink_progress_info.visible = False
+        self.hardlink_creation_button.disabled = False
+        self.hardlink_add_button.disabled = False
+        if result.has_error:
+            snackbar = ft.SnackBar(
+                content=ft.Text(f"{result.error_message}"),
+                duration=3000,
+            )
+        else:
+            snackbar = ft.SnackBar(
+                content=ft.Text(
+                    f"{result.success_creation_count}/{len(search_result)} 件のハードリンクが追加されました"
                 ),
                 duration=3000,
             )
