@@ -138,6 +138,7 @@ class FilterTab(ft.Container):
         """チャートフィルタのグループを初期化"""
         self.positive_fliter = ChartFileterGroup(
             forms=[
+                TextFilterOptionForm(id="title", label="タイトル", comma_split=True),
                 TextFilterOptionForm(id="artist", label="アーティスト", comma_split=True),
                 TextFilterOptionForm(id="charter", label="チャーター", comma_split=True),
                 TextFilterOptionForm(id="min_diff_level", label="最小難易度", only_integer_input=True),
